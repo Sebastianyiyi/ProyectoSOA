@@ -200,7 +200,26 @@ function showView(viewId) {
     if (viewId === 'view-public-medicos') Citas.cargarMedicosPublicos();
 }
 
+function showErrorModal(mensaje) {
+    const message = document.getElementById('modal-error-message');
+    if (!message || typeof openModal !== 'function') {
+        console.error(mensaje);
+        return;
+    }
+
+    message.textContent = mensaje || 'Ocurrió un error inesperado. Por favor, intenta nuevamente.';
+    const modal = document.getElementById('modalError');
+    if (!modal || !modal.classList.contains('is-open')) {
+        openModal('modalError');
+    }
+}
+
 function showAlert(mensaje, tipo = 'info') {
+    if (tipo === 'danger') {
+        showErrorModal(mensaje);
+        return;
+    }
+
     const alertBox = document.getElementById('global-alert-container');
     if (!alertBox) return;
 

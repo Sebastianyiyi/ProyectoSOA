@@ -1394,6 +1394,10 @@ body.modal-open {
     width: min(780px, 100%);
 }
 
+.modal-dialog--sm {
+    width: min(430px, 100%);
+}
+
 @keyframes modalIn {
     from { opacity: 0; transform: translateY(12px) scale(0.98); }
     to { opacity: 1; transform: translateY(0) scale(1); }
@@ -1422,6 +1426,15 @@ body.modal-open {
     font-size: 1.05rem;
 }
 
+.modal-header--danger {
+    border-bottom-color: rgba(192, 57, 43, 0.25);
+    background: #fdf0ee;
+}
+
+.modal-header--danger .modal-title {
+    color: var(--danger);
+}
+
 .modal-close {
     width: 36px;
     height: 36px;
@@ -1441,6 +1454,12 @@ body.modal-open {
 
 .modal-body {
     padding: 1.35rem;
+}
+
+.modal-message {
+    margin: 0;
+    color: var(--text);
+    line-height: 1.55;
 }
 
 .modal-body .form-group + .form-group {

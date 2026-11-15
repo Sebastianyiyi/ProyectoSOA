@@ -1,5 +1,14 @@
 // Gestión de citas, médicos, especialidades y pacientes de Clínica Ecuador.
 
+function mostrarErrorCarga(contenedor, error, mensaje = 'No se pudo cargar la información.') {
+    if (contenedor) {
+        contenedor.innerHTML = `<p class="text-muted">${mensaje}</p>`;
+    }
+    if (typeof showErrorModal === 'function') {
+        showErrorModal(error && error.message ? error.message : 'Ocurrió un error inesperado.');
+    }
+}
+
 const Citas = {
     // ==========================================
     // VISTAS PÚBLICAS
@@ -23,7 +32,7 @@ const Citas = {
                 </div>
             `).join('');
         } catch (err) {
-            cont.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+            mostrarErrorCarga(cont, err);
         }
     },
 
@@ -49,7 +58,7 @@ const Citas = {
                 </div>
             `).join('');
         } catch (err) {
-            cont.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+            mostrarErrorCarga(cont, err);
         }
     },
 
@@ -102,6 +111,7 @@ const Citas = {
                     selectMed.disabled = false;
                 } catch (e) {
                     selectMed.innerHTML = `<option value="">Error cargando médicos</option>`;
+                    showAlert('No se pudieron cargar los médicos. Intenta nuevamente.', 'danger');
                 }
             };
         } catch (err) {
@@ -205,7 +215,7 @@ const Citas = {
                 </div>
             `;
         } catch (err) {
-            cont.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+            mostrarErrorCarga(cont, err);
         }
     },
 
@@ -316,7 +326,7 @@ const Citas = {
                 </div>
             `;
         } catch (err) {
-            cont.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+            mostrarErrorCarga(cont, err);
         }
     },
 
@@ -372,7 +382,7 @@ const Citas = {
                 </div>
             `;
         } catch (err) {
-            cont.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+            mostrarErrorCarga(cont, err);
         }
     },
 
@@ -467,7 +477,7 @@ const Citas = {
                 </div>
             `;
         } catch (err) {
-            cont.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+            mostrarErrorCarga(cont, err);
         }
     },
 
@@ -574,7 +584,7 @@ const Citas = {
                 </div>
             `;
         } catch (err) {
-            cont.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+            mostrarErrorCarga(cont, err);
         }
     },
 
@@ -682,7 +692,7 @@ const Citas = {
                 </div>
             `;
         } catch (err) {
-            cont.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+            mostrarErrorCarga(cont, err);
         }
     },
 
@@ -772,7 +782,7 @@ const Citas = {
                 </div>
             `;
         } catch (err) {
-            cont.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+            mostrarErrorCarga(cont, err);
         }
     }
 };
