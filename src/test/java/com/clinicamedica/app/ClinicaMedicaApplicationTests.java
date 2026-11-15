@@ -1,13 +1,13 @@
-package com.quinto.proyecto;
+package com.clinicamedica.app;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ProyectoApplicationTests {
+class ClinicaMedicaApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
-
+    @Test
+    void contextLoads() {
+    }
 }
+
