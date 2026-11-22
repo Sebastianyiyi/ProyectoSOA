@@ -917,6 +917,61 @@
         </div>
     </div>
 
+    <!-- MODAL: EDITAR MÉDICO -->
+    <div class="modal" id="modalEditarMedico" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="modal-backdrop" data-modal-close></div>
+        <div class="modal-dialog modal-dialog--wide">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Editar información del médico</h3>
+                    <button class="modal-close" type="button" data-modal-close aria-label="Cerrar">&times;</button>
+                </div>
+                <form id="form-editar-medico">
+                    <input type="hidden" id="edit-medico-id">
+                    <div class="modal-body">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label" for="edit-medico-cedula">Cédula (No editable)</label>
+                                <input class="input" type="text" id="edit-medico-cedula" readonly tabindex="-1"
+                                       style="background-color: var(--surface-soft, #f1f5f9); cursor: not-allowed;">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="edit-medico-email">Correo (No editable)</label>
+                                <input class="input" type="email" id="edit-medico-email" readonly tabindex="-1"
+                                       style="background-color: var(--surface-soft, #f1f5f9); cursor: not-allowed;">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="edit-medico-especialidad-id">Especialidad asignada *</label>
+                                <select class="select" id="edit-medico-especialidad-id" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="edit-medico-telefono">Teléfono</label>
+                                <input class="input" type="tel" id="edit-medico-telefono">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="edit-medico-nombre">Nombre *</label>
+                                <input class="input" type="text" id="edit-medico-nombre" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="edit-medico-apellido">Apellido *</label>
+                                <input class="input" type="text" id="edit-medico-apellido" required>
+                            </div>
+                            <div class="form-group form-group--full">
+                                <label class="form-label" for="edit-medico-password">Cambiar contraseña (opcional)</label>
+                                <input class="input" type="password" id="edit-medico-password"
+                                       placeholder="Dejar en blanco para conservar la contraseña actual">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-modal-close>Cancelar</button>
+                        <button class="btn btn-primary" type="submit" id="btn-actualizar-medico">Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL: NUEVA ESPECIALIDAD -->
     <div class="modal" id="modalNuevaEspecialidad" role="dialog" aria-modal="true" aria-hidden="true">
         <div class="modal-backdrop" data-modal-close></div>
@@ -942,6 +997,42 @@
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-modal-close>Cancelar</button>
                         <button class="btn btn-primary" type="submit" id="btn-guardar-esp">Guardar especialidad</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: EDITAR ESPECIALIDAD -->
+    <div class="modal" id="modalEditarEspecialidad" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="modal-backdrop" data-modal-close></div>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Editar especialidad médica</h3>
+                    <button class="modal-close" type="button" data-modal-close aria-label="Cerrar">&times;</button>
+                </div>
+                <form id="form-editar-especialidad">
+                    <input type="hidden" id="edit-esp-id">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-label" for="edit-esp-id-display">Código ID (No editable)</label>
+                            <input class="input" type="text" id="edit-esp-id-display" readonly tabindex="-1"
+                                   style="background-color: var(--surface-soft, #f1f5f9); cursor: not-allowed;">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="edit-esp-nombre">Nombre de la especialidad *</label>
+                            <input class="input" type="text" id="edit-esp-nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="edit-esp-descripcion">Descripción</label>
+                            <textarea class="textarea" id="edit-esp-descripcion" rows="3"
+                                      placeholder="Detalle de la especialidad"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-modal-close>Cancelar</button>
+                        <button class="btn btn-primary" type="submit" id="btn-actualizar-esp">Guardar cambios</button>
                     </div>
                 </form>
             </div>
