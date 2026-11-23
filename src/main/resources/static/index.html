@@ -26,61 +26,91 @@
             </button>
 
             <nav class="main-nav" id="mainNav" aria-label="Navegación principal">
-                <ul class="nav-list">
-                    <li>
+                <ul class="nav-list" id="navMainList">
+                    <!-- Inicio (siempre disponible a la izquierda) -->
+                    <li class="nav-item-always">
                         <a class="nav-link is-active" href="#" data-view="view-home"
                            onclick="showView('view-home')">Inicio</a>
                     </li>
-                    <li>
+
+                    <!-- Enlaces públicos (Quiénes Somos, Misión y Visión, Especialidades, Médicos, Contáctanos) -->
+                    <li class="nav-public-item">
                         <a class="nav-link" href="#" data-view="view-quienes-somos"
                            onclick="showView('view-quienes-somos')">Quiénes Somos</a>
                     </li>
-                    <li>
+                    <li class="nav-public-item">
                         <a class="nav-link" href="#" data-view="view-mision-vision"
                            onclick="showView('view-mision-vision')">Misión y Visión</a>
                     </li>
-                    <li>
+                    <li class="nav-public-item">
                         <a class="nav-link" href="#" data-view="view-public-especialidades"
                            onclick="showView('view-public-especialidades')">Especialidades</a>
                     </li>
-                    <li>
+                    <li class="nav-public-item">
                         <a class="nav-link" href="#" data-view="view-public-medicos"
                            onclick="showView('view-public-medicos')">Médicos</a>
                     </li>
-                    <li>
+                    <li class="nav-public-item">
                         <a class="nav-link" href="#" data-view="view-contactanos"
                            onclick="showView('view-contactanos')">Contáctanos</a>
                     </li>
 
-                    <li class="nav-dropdown role-admin" style="display: none;">
-                        <button class="nav-link nav-dropdown-toggle" type="button"
-                                data-dropdown-toggle aria-expanded="false">Panel Admin</button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#" onclick="showView('view-admin-citas')">Supervisión de citas</a>
-                            <a class="dropdown-item" href="#" onclick="showView('view-admin-medicos')">Gestión de médicos</a>
-                            <a class="dropdown-item" href="#" onclick="showView('view-admin-especialidades')">Gestión de especialidades</a>
-                            <a class="dropdown-item" href="#" onclick="showView('view-admin-pacientes')">Directorio de pacientes</a>
-                        </div>
+                    <!-- Botones directos al portal por rol (visibles en Inicio cuando hay sesión; al hacer clic van directo a su página por default) -->
+                    <li class="nav-portal-btn role-admin" style="display: none;">
+                        <a class="nav-link" href="#" onclick="showView('view-admin-citas')">Panel Admin</a>
+                    </li>
+                    <li class="nav-portal-btn role-medico" style="display: none;">
+                        <a class="nav-link" href="#" onclick="showView('view-medico-agenda')">Portal Médico</a>
+                    </li>
+                    <li class="nav-portal-btn role-paciente" style="display: none;">
+                        <a class="nav-link" href="#" onclick="showView('view-paciente-citas')">Mi Cuenta</a>
                     </li>
 
-                    <li class="nav-dropdown role-medico" style="display: none;">
-                        <button class="nav-link nav-dropdown-toggle" type="button"
-                                data-dropdown-toggle aria-expanded="false">Portal Médico</button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#" onclick="showView('view-medico-agenda')">Mi agenda de citas</a>
-                            <a class="dropdown-item" href="#" onclick="showView('view-medico-pacientes')">Mis pacientes</a>
-                            <a class="dropdown-item" href="#" onclick="showView('view-medico-perfil')">Mi perfil profesional</a>
-                        </div>
+                    <!-- Páginas del rol directamente en la navbar (visibles únicamente cuando se ingresa a las páginas del rol) -->
+                    <!-- ADMIN -->
+                    <li class="nav-role-item role-admin" style="display: none;">
+                        <a class="nav-link" href="#" data-view="view-admin-citas"
+                           onclick="showView('view-admin-citas')">Supervisión de citas</a>
+                    </li>
+                    <li class="nav-role-item role-admin" style="display: none;">
+                        <a class="nav-link" href="#" data-view="view-admin-medicos"
+                           onclick="showView('view-admin-medicos')">Gestión de médicos</a>
+                    </li>
+                    <li class="nav-role-item role-admin" style="display: none;">
+                        <a class="nav-link" href="#" data-view="view-admin-especialidades"
+                           onclick="showView('view-admin-especialidades')">Gestión de especialidades</a>
+                    </li>
+                    <li class="nav-role-item role-admin" style="display: none;">
+                        <a class="nav-link" href="#" data-view="view-admin-pacientes"
+                           onclick="showView('view-admin-pacientes')">Directorio de pacientes</a>
                     </li>
 
-                    <li class="nav-dropdown role-paciente" style="display: none;">
-                        <button class="nav-link nav-dropdown-toggle" type="button"
-                                data-dropdown-toggle aria-expanded="false">Mi Cuenta</button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#" onclick="showView('view-paciente-citas')">Mis citas médicas</a>
-                            <a class="dropdown-item" href="#" onclick="showView('view-paciente-agendar')">Agendar nueva cita</a>
-                            <a class="dropdown-item" href="#" onclick="showView('view-paciente-perfil')">Mi ficha de paciente</a>
-                        </div>
+                    <!-- MÉDICO -->
+                    <li class="nav-role-item role-medico" style="display: none;">
+                        <a class="nav-link" href="#" data-view="view-medico-agenda"
+                           onclick="showView('view-medico-agenda')">Mi agenda de citas</a>
+                    </li>
+                    <li class="nav-role-item role-medico" style="display: none;">
+                        <a class="nav-link" href="#" data-view="view-medico-pacientes"
+                           onclick="showView('view-medico-pacientes')">Mis pacientes</a>
+                    </li>
+                    <li class="nav-role-item role-medico" style="display: none;">
+                        <a class="nav-link" href="#" data-view="view-medico-perfil"
+                           onclick="showView('view-medico-perfil')">Mi perfil profesional</a>
+                    </li>
+
+                    <!-- PACIENTE -->
+                    <li class="nav-role-item role-paciente" style="display: none;">
+                        <a class="nav-link" href="#" data-view="view-paciente-citas"
+                           onclick="showView('view-paciente-citas')">Mis citas médicas</a>
+                    </li>
+                    <li class="nav-role-item role-paciente" style="display: none;">
+                        <a class="nav-link" href="#" data-view="view-paciente-agendar"
+                           onclick="showView('view-paciente-agendar')">Agendar nueva cita</a>
+                    </li>
+                    <li class="nav-role-item role-paciente" style="display: none;">
+                        <a class="nav-link" href="#" data-view="view-paciente-perfil"
+                           onclick="showView('view-paciente-perfil')">Mi ficha de paciente</a>
                     </li>
                 </ul>
 
@@ -887,6 +917,61 @@
         </div>
     </div>
 
+    <!-- MODAL: EDITAR MÉDICO -->
+    <div class="modal" id="modalEditarMedico" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="modal-backdrop" data-modal-close></div>
+        <div class="modal-dialog modal-dialog--wide">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Editar información del médico</h3>
+                    <button class="modal-close" type="button" data-modal-close aria-label="Cerrar">&times;</button>
+                </div>
+                <form id="form-editar-medico">
+                    <input type="hidden" id="edit-medico-id">
+                    <div class="modal-body">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label" for="edit-medico-cedula">Cédula (No editable)</label>
+                                <input class="input" type="text" id="edit-medico-cedula" readonly tabindex="-1"
+                                       style="background-color: var(--surface-soft, #f1f5f9); cursor: not-allowed;">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="edit-medico-email">Correo (No editable)</label>
+                                <input class="input" type="email" id="edit-medico-email" readonly tabindex="-1"
+                                       style="background-color: var(--surface-soft, #f1f5f9); cursor: not-allowed;">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="edit-medico-especialidad-id">Especialidad asignada *</label>
+                                <select class="select" id="edit-medico-especialidad-id" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="edit-medico-telefono">Teléfono</label>
+                                <input class="input" type="tel" id="edit-medico-telefono">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="edit-medico-nombre">Nombre *</label>
+                                <input class="input" type="text" id="edit-medico-nombre" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="edit-medico-apellido">Apellido *</label>
+                                <input class="input" type="text" id="edit-medico-apellido" required>
+                            </div>
+                            <div class="form-group form-group--full">
+                                <label class="form-label" for="edit-medico-password">Cambiar contraseña (opcional)</label>
+                                <input class="input" type="password" id="edit-medico-password"
+                                       placeholder="Dejar en blanco para conservar la contraseña actual">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-modal-close>Cancelar</button>
+                        <button class="btn btn-primary" type="submit" id="btn-actualizar-medico">Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL: NUEVA ESPECIALIDAD -->
     <div class="modal" id="modalNuevaEspecialidad" role="dialog" aria-modal="true" aria-hidden="true">
         <div class="modal-backdrop" data-modal-close></div>
@@ -912,6 +997,42 @@
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-modal-close>Cancelar</button>
                         <button class="btn btn-primary" type="submit" id="btn-guardar-esp">Guardar especialidad</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: EDITAR ESPECIALIDAD -->
+    <div class="modal" id="modalEditarEspecialidad" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="modal-backdrop" data-modal-close></div>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Editar especialidad médica</h3>
+                    <button class="modal-close" type="button" data-modal-close aria-label="Cerrar">&times;</button>
+                </div>
+                <form id="form-editar-especialidad">
+                    <input type="hidden" id="edit-esp-id">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-label" for="edit-esp-id-display">Código ID (No editable)</label>
+                            <input class="input" type="text" id="edit-esp-id-display" readonly tabindex="-1"
+                                   style="background-color: var(--surface-soft, #f1f5f9); cursor: not-allowed;">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="edit-esp-nombre">Nombre de la especialidad *</label>
+                            <input class="input" type="text" id="edit-esp-nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="edit-esp-descripcion">Descripción</label>
+                            <textarea class="textarea" id="edit-esp-descripcion" rows="3"
+                                      placeholder="Detalle de la especialidad"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-modal-close>Cancelar</button>
+                        <button class="btn btn-primary" type="submit" id="btn-actualizar-esp">Guardar cambios</button>
                     </div>
                 </form>
             </div>

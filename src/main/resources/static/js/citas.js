@@ -572,6 +572,9 @@ const Citas = {
                                     <td>${m.telefono || '-'}</td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary" onclick="Citas.abrirModalEditarMedico(${m.id})">
+                                                Editar
+                                            </button>
                                             <button class="btn btn-outline-danger" onclick="Citas.eliminarMedicoAdmin(${m.id})">
                                                 Eliminar
                                             </button>
@@ -650,6 +653,77 @@ const Citas = {
         }
     },
 
+    async abrirModalEditarMedico(id) {
+        const form = document.getElementById('form-editar-medico');
+        if (form) form.reset();
+
+        const selectEsp = document.getElementById('edit-medico-especialidad-id');
+        selectEsp.innerHTML = '<option value="">Cargando especialidades...</option>';
+
+        try {
+            const [medico, especialidades] = await Promise.all([
+                Auth.request(`/api/medicos/${id}`),
+                Auth.request('/api/especialidades')
+            ]);
+
+            document.getElementById('edit-medico-id').value = medico.id;
+            document.getElementById('edit-medico-cedula').value = medico.cedula;
+            document.getElementById('edit-medico-email').value = medico.email || '';
+            document.getElementById('edit-medico-nombre').value = medico.nombre;
+            document.getElementById('edit-medico-apellido').value = medico.apellido;
+            document.getElementById('edit-medico-telefono').value = medico.telefono || '';
+            document.getElementById('edit-medico-password').value = '';
+
+            selectEsp.innerHTML = '<option value="">-- Selecciona Especialidad --</option>' +
+                especialidades.map(esp =>
+                    `<option value="${esp.id}" ${esp.id === medico.especialidadId ? 'selected' : ''}>${esp.nombre}</option>`
+                ).join('');
+
+            openModal('modalEditarMedico');
+        } catch (err) {
+            showAlert('Error al cargar datos del médico: ' + err.message, 'danger');
+        }
+    },
+
+    async guardarEditarMedico(e) {
+        e.preventDefault();
+        const id = document.getElementById('edit-medico-id').value;
+        const data = {
+            id: parseInt(id),
+            cedula: document.getElementById('edit-medico-cedula').value.trim(),
+            email: document.getElementById('edit-medico-email').value.trim(),
+            nombre: document.getElementById('edit-medico-nombre').value.trim(),
+            apellido: document.getElementById('edit-medico-apellido').value.trim(),
+            telefono: document.getElementById('edit-medico-telefono').value.trim(),
+            especialidadId: parseInt(document.getElementById('edit-medico-especialidad-id').value)
+        };
+
+        const pass = document.getElementById('edit-medico-password').value;
+        if (pass && pass.trim()) {
+            data.password = pass;
+        }
+
+        const btn = document.getElementById('btn-actualizar-medico');
+        try {
+            btn.disabled = true;
+            btn.innerText = 'Guardando...';
+
+            await Auth.request(`/api/medicos/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify(data)
+            });
+
+            closeModal('modalEditarMedico');
+            showAlert('Médico actualizado exitosamente.', 'success');
+            this.cargarMedicosAdmin();
+        } catch (err) {
+            showAlert(err.message, 'danger');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = 'Guardar cambios';
+        }
+    },
+
     // CRUD DE ESPECIALIDADES (ADMIN)
     async cargarEspecialidadesAdmin() {
         const cont = document.getElementById('admin-especialidades-container');
@@ -681,9 +755,14 @@ const Citas = {
                                     <td><strong class="text-primary">${esp.nombre}</strong></td>
                                     <td>${esp.descripcion || '-'}</td>
                                     <td>
-                                        <button class="btn btn-sm btn-outline-danger" onclick="Citas.eliminarEspecialidadAdmin(${esp.id})">
-                                            Eliminar
-                                        </button>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary" onclick="Citas.abrirModalEditarEspecialidad(${esp.id})">
+                                                Editar
+                                            </button>
+                                            <button class="btn btn-outline-danger" onclick="Citas.eliminarEspecialidadAdmin(${esp.id})">
+                                                Eliminar
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             `).join('')}
@@ -739,6 +818,53 @@ const Citas = {
             this.cargarEspecialidadesAdmin();
         } catch (err) {
             showAlert(err.message, 'danger');
+        }
+    },
+
+    async abrirModalEditarEspecialidad(id) {
+        const form = document.getElementById('form-editar-especialidad');
+        if (form) form.reset();
+
+        try {
+            const esp = await Auth.request(`/api/especialidades/${id}`);
+            document.getElementById('edit-esp-id').value = esp.id;
+            document.getElementById('edit-esp-id-display').value = `#${esp.id}`;
+            document.getElementById('edit-esp-nombre').value = esp.nombre;
+            document.getElementById('edit-esp-descripcion').value = esp.descripcion || '';
+
+            openModal('modalEditarEspecialidad');
+        } catch (err) {
+            showAlert('Error al cargar la especialidad: ' + err.message, 'danger');
+        }
+    },
+
+    async guardarEditarEspecialidad(e) {
+        e.preventDefault();
+        const id = document.getElementById('edit-esp-id').value;
+        const data = {
+            id: parseInt(id),
+            nombre: document.getElementById('edit-esp-nombre').value.trim(),
+            descripcion: document.getElementById('edit-esp-descripcion').value.trim()
+        };
+
+        const btn = document.getElementById('btn-actualizar-esp');
+        try {
+            btn.disabled = true;
+            btn.innerText = 'Guardando...';
+
+            await Auth.request(`/api/especialidades/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify(data)
+            });
+
+            closeModal('modalEditarEspecialidad');
+            showAlert('Especialidad actualizada con éxito.', 'success');
+            this.cargarEspecialidadesAdmin();
+        } catch (err) {
+            showAlert(err.message, 'danger');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = 'Guardar cambios';
         }
     },
 
@@ -805,6 +931,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const formEsp = document.getElementById('form-nueva-especialidad');
     if (formEsp) {
         formEsp.addEventListener('submit', (e) => Citas.guardarNuevaEspecialidad(e));
+    }
+
+    // Form editar medico
+    const formEditMedico = document.getElementById('form-editar-medico');
+    if (formEditMedico) {
+        formEditMedico.addEventListener('submit', (e) => Citas.guardarEditarMedico(e));
+    }
+
+    // Form editar especialidad
+    const formEditEsp = document.getElementById('form-editar-especialidad');
+    if (formEditEsp) {
+        formEditEsp.addEventListener('submit', (e) => Citas.guardarEditarEspecialidad(e));
     }
 });
 

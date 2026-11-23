@@ -1,8 +1,8 @@
 // Autenticacion, sesion y navegacion general de Clínica Ecuador.
 
-const API_BASE_URL = (window.location.port === "8080" || window.location.port === "")
+const API_BASE_URL = (window.location.port === "8081" || window.location.port === "")
     ? ""
-    : "http://localhost:8080";
+    : "http://localhost:8081";
 
 const Auth = {
     getToken() {
@@ -122,13 +122,13 @@ const Auth = {
             el.style.display = isAuth ? 'none' : '';
         });
 
-        document.querySelectorAll('.role-admin').forEach(el => {
+        document.querySelectorAll('.role-admin:not(.nav-role-item):not(.nav-portal-btn)').forEach(el => {
             el.style.display = (isAuth && rol === 'ROLE_ADMIN') ? '' : 'none';
         });
-        document.querySelectorAll('.role-medico').forEach(el => {
+        document.querySelectorAll('.role-medico:not(.nav-role-item):not(.nav-portal-btn)').forEach(el => {
             el.style.display = (isAuth && rol === 'ROLE_MEDICO') ? '' : 'none';
         });
-        document.querySelectorAll('.role-paciente').forEach(el => {
+        document.querySelectorAll('.role-paciente:not(.nav-role-item):not(.nav-portal-btn)').forEach(el => {
             el.style.display = (isAuth && rol === 'ROLE_PACIENTE') ? '' : 'none';
         });
 
@@ -150,8 +150,83 @@ const Auth = {
                 userRoleBadge.className = `badge ${badgeClass}`;
             }
         }
+
+        updateNavbar();
     }
 };
+
+const ROLE_VIEWS = {
+    'ROLE_ADMIN': [
+        'view-admin-citas',
+        'view-admin-medicos',
+        'view-admin-especialidades',
+        'view-admin-pacientes'
+    ],
+    'ROLE_MEDICO': [
+        'view-medico-agenda',
+        'view-medico-pacientes',
+        'view-medico-perfil'
+    ],
+    'ROLE_PACIENTE': [
+        'view-paciente-citas',
+        'view-paciente-agendar',
+        'view-paciente-perfil'
+    ]
+};
+
+function updateNavbar(viewId) {
+    const isAuth = Auth.isAuthenticated();
+    const rol = Auth.getRol();
+    const currentView = viewId || document.querySelector('.section-view.active')?.id || 'view-home';
+
+    const isUserInRoleView = isAuth && !!rol && !!ROLE_VIEWS[rol] && ROLE_VIEWS[rol].includes(currentView);
+
+    // 1. Enlaces públicos (Quiénes Somos, Misión y Visión, etc.)
+    document.querySelectorAll('.nav-public-item').forEach(el => {
+        el.style.display = isUserInRoleView ? 'none' : '';
+    });
+
+    // 2. Botón del rol en inicio ("Panel Admin", "Portal Médico", "Mi Cuenta")
+    // Visible en inicio/páginas públicas cuando hay sesión; al hacer clic redirige a la vista por defecto
+    document.querySelectorAll('.nav-portal-btn').forEach(el => {
+        if (!isAuth || isUserInRoleView) {
+            el.style.display = 'none';
+        } else {
+            if (el.classList.contains('role-admin')) {
+                el.style.display = (rol === 'ROLE_ADMIN') ? '' : 'none';
+            } else if (el.classList.contains('role-medico')) {
+                el.style.display = (rol === 'ROLE_MEDICO') ? '' : 'none';
+            } else if (el.classList.contains('role-paciente')) {
+                el.style.display = (rol === 'ROLE_PACIENTE') ? '' : 'none';
+            } else {
+                el.style.display = 'none';
+            }
+        }
+    });
+
+    // 3. Páginas del rol directamente en la navbar
+    // Se muestran directamente solo cuando el usuario está dentro de las vistas de su rol
+    document.querySelectorAll('.nav-role-item').forEach(el => {
+        if (!isAuth || !isUserInRoleView) {
+            el.style.display = 'none';
+        } else {
+            if (el.classList.contains('role-admin')) {
+                el.style.display = (rol === 'ROLE_ADMIN') ? '' : 'none';
+            } else if (el.classList.contains('role-medico')) {
+                el.style.display = (rol === 'ROLE_MEDICO') ? '' : 'none';
+            } else if (el.classList.contains('role-paciente')) {
+                el.style.display = (rol === 'ROLE_PACIENTE') ? '' : 'none';
+            } else {
+                el.style.display = 'none';
+            }
+        }
+    });
+
+    // 4. Marcar elemento activo (.is-active)
+    document.querySelectorAll('.nav-link[data-view]').forEach(link => {
+        link.classList.toggle('is-active', link.dataset.view === currentView);
+    });
+}
 
 function showView(viewId) {
     document.querySelectorAll('.section-view').forEach(view => {
@@ -163,10 +238,6 @@ function showView(viewId) {
 
     target.classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    document.querySelectorAll('.nav-link[data-view]').forEach(link => {
-        link.classList.toggle('is-active', link.dataset.view === viewId);
-    });
 
     if (typeof window.closeNavigation === 'function') {
         window.closeNavigation();
@@ -182,9 +253,12 @@ function showView(viewId) {
             target.classList.remove('active');
             const loginView = document.getElementById('view-login');
             if (loginView) loginView.classList.add('active');
+            updateNavbar('view-login');
             return;
         }
     }
+
+    updateNavbar(viewId);
 
     if (viewId === 'view-admin-citas') Citas.cargarCitasAdmin();
     if (viewId === 'view-admin-medicos') Citas.cargarMedicosAdmin();
