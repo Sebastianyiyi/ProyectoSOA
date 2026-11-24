@@ -68,7 +68,21 @@ const Citas = {
     async prepararAgendamiento() {
         const selectEsp = document.getElementById('cita-especialidad');
         const selectMed = document.getElementById('cita-medico');
+        const fechaInput = document.getElementById('cita-fechahora');
         if (!selectEsp || !selectMed) return;
+
+        if (fechaInput) {
+            const now = new Date();
+            const pad = (n) => String(n).padStart(2, '0');
+            const toLocalISO = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+            
+            // Establecer fecha mínima como el momento actual (evita agendar en el pasado)
+            fechaInput.min = toLocalISO(now);
+
+            // Establecer fecha máxima (máximo 3 meses en adelante)
+            const maxDate = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000);
+            fechaInput.max = toLocalISO(maxDate);
+        }
 
         selectEsp.innerHTML = '<option value="">-- Selecciona una Especialidad --</option>';
         selectMed.innerHTML = '<option value="">-- Primero selecciona una especialidad --</option>';
@@ -127,6 +141,19 @@ const Citas = {
 
         if (!medicoId || !fechaHora || !motivo) {
             showAlert('Por favor completa todos los campos requeridos.', 'warning');
+            return;
+        }
+
+        const selectedDate = new Date(fechaHora);
+        const now = new Date();
+        if (selectedDate < now) {
+            showAlert('No se pueden agendar citas en fechas u horas pasadas. Debe seleccionar una fecha futura.', 'warning');
+            return;
+        }
+
+        const maxDate = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000);
+        if (selectedDate > maxDate) {
+            showAlert('No se pueden agendar citas con fecha posterior a 3 meses a partir de hoy.', 'warning');
             return;
         }
 
@@ -219,18 +246,23 @@ const Citas = {
         }
     },
 
-    async cancelarCitaPaciente(id) {
-        if (!confirm('¿Estás seguro de cancelar esta cita médica?')) return;
-        try {
-            await Auth.request(`/api/citas/${id}/estado`, {
-                method: 'PATCH',
-                body: JSON.stringify({ estado: 'CANCELADA' })
-            });
-            showAlert('Cita cancelada correctamente.', 'info');
-            this.cargarCitasPaciente();
-        } catch (err) {
-            showAlert(err.message, 'danger');
-        }
+    cancelarCitaPaciente(id) {
+        showConfirmModal(
+            '¿Estás seguro de que deseas cancelar esta cita médica? Esta acción no se puede deshacer.',
+            async () => {
+                try {
+                    await Auth.request(`/api/citas/${id}/estado`, {
+                        method: 'PATCH',
+                        body: JSON.stringify({ estado: 'CANCELADA' })
+                    });
+                    showAlert('Cita cancelada correctamente.', 'info');
+                    this.cargarCitasPaciente();
+                } catch (err) {
+                    showAlert(err.message, 'danger');
+                }
+            },
+            'Cancelar cita médica'
+        );
     },
 
     async cargarPerfilPaciente() {
@@ -525,15 +557,20 @@ const Citas = {
         }
     },
 
-    async eliminarCitaAdmin(id) {
-        if (!confirm(`¿Estás seguro de eliminar permanentemente la cita médica #${id}?`)) return;
-        try {
-            await Auth.request(`/api/citas/${id}`, { method: 'DELETE' });
-            showAlert('Cita eliminada correctamente del sistema.', 'info');
-            this.cargarCitasAdmin();
-        } catch (err) {
-            showAlert(err.message, 'danger');
-        }
+    eliminarCitaAdmin(id) {
+        showConfirmModal(
+            `¿Estás seguro de eliminar permanentemente la cita médica #${id}? Esta acción no se puede deshacer.`,
+            async () => {
+                try {
+                    await Auth.request(`/api/citas/${id}`, { method: 'DELETE' });
+                    showAlert('Cita eliminada correctamente del sistema.', 'info');
+                    this.cargarCitasAdmin();
+                } catch (err) {
+                    showAlert(err.message, 'danger');
+                }
+            },
+            'Eliminar cita médica'
+        );
     },
 
     // CRUD DE MÉDICOS (ADMIN)
@@ -642,15 +679,20 @@ const Citas = {
         }
     },
 
-    async eliminarMedicoAdmin(id) {
-        if (!confirm('¿Estás seguro de eliminar este médico y su cuenta asociada?')) return;
-        try {
-            await Auth.request(`/api/medicos/${id}`, { method: 'DELETE' });
-            showAlert('Médico eliminado del sistema.', 'info');
-            this.cargarMedicosAdmin();
-        } catch (err) {
-            showAlert(err.message, 'danger');
-        }
+    eliminarMedicoAdmin(id) {
+        showConfirmModal(
+            '¿Estás seguro de eliminar este médico y su cuenta de usuario asociada? Esta acción no se puede deshacer.',
+            async () => {
+                try {
+                    await Auth.request(`/api/medicos/${id}`, { method: 'DELETE' });
+                    showAlert('Médico eliminado del sistema.', 'info');
+                    this.cargarMedicosAdmin();
+                } catch (err) {
+                    showAlert(err.message, 'danger');
+                }
+            },
+            'Eliminar médico'
+        );
     },
 
     async abrirModalEditarMedico(id) {
@@ -810,15 +852,20 @@ const Citas = {
         }
     },
 
-    async eliminarEspecialidadAdmin(id) {
-        if (!confirm('¿Estás seguro de eliminar esta especialidad?')) return;
-        try {
-            await Auth.request(`/api/especialidades/${id}`, { method: 'DELETE' });
-            showAlert('Especialidad médica eliminada.', 'info');
-            this.cargarEspecialidadesAdmin();
-        } catch (err) {
-            showAlert(err.message, 'danger');
-        }
+    eliminarEspecialidadAdmin(id) {
+        showConfirmModal(
+            '¿Estás seguro de eliminar esta especialidad médica? Esta acción no se puede deshacer.',
+            async () => {
+                try {
+                    await Auth.request(`/api/especialidades/${id}`, { method: 'DELETE' });
+                    showAlert('Especialidad médica eliminada.', 'info');
+                    this.cargarEspecialidadesAdmin();
+                } catch (err) {
+                    showAlert(err.message, 'danger');
+                }
+            },
+            'Eliminar especialidad'
+        );
     },
 
     async abrirModalEditarEspecialidad(id) {

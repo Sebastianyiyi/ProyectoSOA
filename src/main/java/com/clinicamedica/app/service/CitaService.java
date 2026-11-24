@@ -113,6 +113,16 @@ public class CitaService {
         Medico medico = medicoRepository.findById(dto.getMedicoId())
                 .orElseThrow(() -> new NoSuchElementException("Medico no encontrado con id " + dto.getMedicoId()));
 
+        if (dto.getFechaHora() == null) {
+            throw new IllegalArgumentException("La fecha y hora de la cita es obligatoria");
+        }
+        if (dto.getFechaHora().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("No se pueden agendar citas en fechas u horas pasadas. Debe seleccionar una fecha futura.");
+        }
+        if (dto.getFechaHora().isAfter(LocalDateTime.now().plusMonths(3))) {
+            throw new IllegalArgumentException("No se pueden agendar citas con fecha posterior a 3 meses a partir de hoy.");
+        }
+
         Cita cita = Cita.builder()
                 .paciente(paciente)
                 .medico(medico)
@@ -195,6 +205,12 @@ public class CitaService {
             cita.setPaciente(paciente);
         }
         if (dto.getFechaHora() != null) {
+            if (dto.getFechaHora().isBefore(LocalDateTime.now())) {
+                throw new IllegalArgumentException("No se pueden programar citas en fechas u horas pasadas.");
+            }
+            if (dto.getFechaHora().isAfter(LocalDateTime.now().plusMonths(3))) {
+                throw new IllegalArgumentException("No se pueden programar citas con fecha posterior a 3 meses a partir de hoy.");
+            }
             cita.setFechaHora(dto.getFechaHora());
         }
         if (dto.getMotivo() != null && !dto.getMotivo().isBlank()) {

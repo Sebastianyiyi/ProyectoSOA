@@ -288,6 +288,31 @@ function showErrorModal(mensaje) {
     }
 }
 
+function showConfirmModal(mensaje, onConfirm, titulo = 'Confirmar acción') {
+    const titleEl = document.getElementById('modal-confirm-title');
+    const msgEl = document.getElementById('modal-confirm-message');
+    const btnConfirm = document.getElementById('modal-confirm-btn');
+
+    if (titleEl) titleEl.textContent = titulo;
+    if (msgEl) msgEl.textContent = mensaje || '¿Estás seguro de que deseas realizar esta acción?';
+
+    if (btnConfirm) {
+        btnConfirm.onclick = async () => {
+            if (typeof closeModal === 'function') {
+                closeModal('modalConfirmacion');
+            }
+            if (typeof onConfirm === 'function') {
+                await onConfirm();
+            }
+        };
+    }
+
+    if (typeof openModal === 'function') {
+        openModal('modalConfirmacion');
+    }
+}
+window.showConfirmModal = showConfirmModal;
+
 function showAlert(mensaje, tipo = 'info') {
     if (tipo === 'danger') {
         showErrorModal(mensaje);

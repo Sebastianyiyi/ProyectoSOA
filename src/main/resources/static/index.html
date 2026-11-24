@@ -1059,6 +1059,27 @@
         </div>
     </div>
 
+    <!-- MODAL: CONFIRMACIÓN DE ACCIÓN -->
+    <div class="modal" id="modalConfirmacion" role="dialog" aria-modal="true" aria-hidden="true"
+         aria-labelledby="modal-confirm-title" aria-describedby="modal-confirm-message">
+        <div class="modal-backdrop" data-modal-close></div>
+        <div class="modal-dialog modal-dialog--sm">
+            <div class="modal-content">
+                <div class="modal-header modal-header--danger">
+                    <h3 class="modal-title" id="modal-confirm-title">Confirmar acción</h3>
+                    <button class="modal-close" type="button" data-modal-close aria-label="Cerrar">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p class="modal-message" id="modal-confirm-message">¿Estás seguro de continuar?</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-modal-close>Cancelar</button>
+                    <button class="btn btn-danger" type="button" id="modal-confirm-btn">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="js/ui.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/citas.js"></script>
